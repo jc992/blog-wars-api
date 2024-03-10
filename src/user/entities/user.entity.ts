@@ -16,7 +16,7 @@ import { Comment } from '../../comment/entities/comment.entity';
 @Index(['email'], { unique: true })
 export class User {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   username: string;

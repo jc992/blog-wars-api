@@ -21,8 +21,6 @@ export class UserService {
   }: RegistrationDto): Promise<InsertResult> {
     try {
       // TODO error handling
-      const number = this.getRandomNumber();
-      console.log({ number });
       const salt = await genSalt(this.getRandomNumber());
       const passwordHash = await hash(password, salt);
       return this.repo.insert({
@@ -37,6 +35,10 @@ export class UserService {
     }
   }
 
+  getUserById(id: number): Promise<User> {
+    return this.repo.findOneBy({ id });
+  }
+
   async getByUsername({ username, password }: LoginDto): Promise<User> {
     const user = await this.repo.findOne({
       where: {
@@ -49,7 +51,8 @@ export class UserService {
       return null;
     }
 
-    const computedHash = hash(password, user.salt);
+    const computedHash = await hash(password, user.salt);
+
     if (computedHash !== user.hash) {
       // TODO: throw
       return null;
