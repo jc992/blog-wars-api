@@ -10,7 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
-import { BlogPost } from '../../blog-post/entities/blog-post.entity';
+import { BlogPost } from '../../blog-post/entities/blogPost.entity';
 
 @Entity()
 export class Comment {

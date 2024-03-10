@@ -8,7 +8,7 @@ import {
   Relation,
   UpdateDateColumn,
 } from 'typeorm';
-import { BlogPost } from '../../blog-post/entities/blog-post.entity';
+import { BlogPost } from '../../blog-post/entities/blogPost.entity';
 import { Comment } from '../../comment/entities/comment.entity';
 
 @Entity()

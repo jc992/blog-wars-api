@@ -4,10 +4,10 @@ import {
   Injectable,
   NotImplementedException,
 } from '@nestjs/common';
-import { CreateBlogPostDto } from './dto/create-blog-post.dto';
-import { UpdateBlogPostDto } from './dto/update-blog-post.dto';
+import { CreateBlogPostDto } from './dto/createBlogPost.dto';
+import { UpdateBlogPostDto } from './dto/updateBlogPost.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BlogPost } from './entities/blog-post.entity';
+import { BlogPost } from './entities/blogPost.entity';
 import { Repository } from 'typeorm';
 import { UserService } from '../user/user.service';
 
