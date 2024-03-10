@@ -5,9 +5,9 @@ export class CreateBlogPostDto {
   content: string;
 
   @IsNotEmpty({ message: 'User Id required' })
-  userId: string;
+  userId: number;
 
-  constructor(content: string, userId: string) {
+  constructor(content: string, userId: number) {
     this.content = content;
     this.userId = userId;
   }
