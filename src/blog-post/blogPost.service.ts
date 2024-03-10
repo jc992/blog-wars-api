@@ -11,6 +11,12 @@ import { BlogPost } from './entities/blogPost.entity';
 import { Repository } from 'typeorm';
 import { UserService } from '../user/user.service';
 
+import { createCipheriv, createDecipheriv, randomBytes, scrypt } from 'crypto';
+import { promisify } from 'util';
+
+// TODO: this mother fucker must be store alongside the content so we can also decyper it;
+const iv = randomBytes(16);
+
 @Injectable()
 export class BlogPostService {
   constructor(
@@ -24,7 +30,36 @@ export class BlogPostService {
     if (!user) {
       throw new HttpException('user not found', HttpStatus.NOT_FOUND);
     }
-    return this.repo.insert({ content, userId: userId });
+
+    // TODO: abstract this to a util Service to be used in other places
+    const password = 'Password used to generate key'; // TODO: this should be env var
+
+    // The key length is dependent on the algorithm.
+    // In this case for aes256, it is 32 bytes.
+    const key = (await promisify(scrypt)(password, 'salt', 32)) as Buffer;
+    const cipher = createCipheriv('aes-256-ctr', key, iv);
+
+    const textToEncrypt = content;
+    const encryptedContent = Buffer.concat([
+      cipher.update(textToEncrypt),
+      cipher.final(),
+    ]);
+
+    console.log({ encryptedText: encryptedContent.toString() });
+
+    const decipher = createDecipheriv('aes-256-ctr', key, iv);
+    const decryptedContent = Buffer.concat([
+      decipher.update(encryptedContent),
+      decipher.final(),
+    ]);
+
+    console.log({ decryptedText: decryptedContent.toString('base64') });
+
+    // ** end
+    return this.repo.insert({
+      content: encryptedContent.toString('base64'),
+      userId: userId,
+    });
   }
 
   findAll() {
@@ -32,6 +67,21 @@ export class BlogPostService {
   }
 
   async findOne(id: number) {
+    const data = await this.repo.findBy({ id });
+    const content = Buffer.from(data[0].content, 'base64');
+
+    // TODO: abstract this to a util Service to be used in other places
+    const password = 'Password used to generate key'; // TODO: this should be env var
+
+    // The key length is dependent on the algorithm.
+    // In this case for aes256, it is 32 bytes.
+    const key = (await promisify(scrypt)(password, 'salt', 32)) as Buffer;
+    const decipher = createDecipheriv('aes-256-ctr', key, iv);
+    const decryptedContent = Buffer.concat([
+      decipher.update(content),
+      decipher.final(),
+    ]);
+    console.log('homoman', decryptedContent.toString());
     return this.repo.findBy({ id });
   }
 
