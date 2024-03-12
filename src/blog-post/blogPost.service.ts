@@ -31,17 +31,25 @@ export class BlogPostService {
     return this.repo.find();
   }
 
-  async findOne(id: number): Promise<BlogPost> {
+  async findById(id: number): Promise<BlogPost> {
     const post = await this.repo.findOneBy({ id });
     if (!post) {
       throw new HttpException('blog post not found', HttpStatus.NOT_FOUND);
     }
-    const decryptedContent = await this.encryptionService.decrypt(post.content);
-    return { ...post, content: decryptedContent };
+    return this.decryptPost(post);
   }
 
   async findByUserId(userId: number) {
-    return this.repo.findBy({ userId });
+    const posts = await this.repo.findBy({ userId });
+    return Promise.all(posts.map(async (p) => await this.decryptPost(p)));
+  }
+
+  private async decryptPost(post: BlogPost): Promise<BlogPost> {
+    const decryptedContent = await this.encryptionService.decrypt(post.content);
+    return {
+      ...post,
+      content: decryptedContent,
+    };
   }
 
   update(id: number, updateBlogPostDto: UpdateBlogPostDto) {

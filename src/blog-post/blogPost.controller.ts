@@ -21,7 +21,7 @@ export class BlogPostController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.blogPostService.findOne(+id);
+    return this.blogPostService.findById(+id);
   }
 
   @Patch(':id')

@@ -4,11 +4,10 @@ import { BlogPostController } from './blogPost.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BlogPost } from './entities/blogPost.entity';
 import { UserModule } from '../user/user.module';
-import { AuthModule } from '../auth/auth.module';
 import { EncryptionModule } from '../encryption/encryption.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([BlogPost]), UserModule, AuthModule, EncryptionModule],
+  imports: [TypeOrmModule.forFeature([BlogPost]), UserModule, EncryptionModule],
   controllers: [BlogPostController],
   providers: [BlogPostService],
   exports: [BlogPostService],
