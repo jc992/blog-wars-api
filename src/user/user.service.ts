@@ -14,11 +14,7 @@ export class UserService {
     private repo: Repository<User>,
   ) {}
 
-  async create({
-    username,
-    password,
-    email,
-  }: RegistrationDto): Promise<InsertResult> {
+  async create({ username, password, email }: RegistrationDto): Promise<InsertResult> {
     try {
       // TODO error handling
       const salt = await genSalt(this.getRandomNumber());

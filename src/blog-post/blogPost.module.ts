@@ -8,12 +8,7 @@ import { AuthModule } from '../auth/auth.module';
 import { EncryptionModule } from '../encryption/encryption.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([BlogPost]),
-    UserModule,
-    AuthModule,
-    EncryptionModule,
-  ],
+  imports: [TypeOrmModule.forFeature([BlogPost]), UserModule, AuthModule, EncryptionModule],
   controllers: [BlogPostController],
   providers: [BlogPostService],
   exports: [BlogPostService],

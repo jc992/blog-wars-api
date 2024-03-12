@@ -13,12 +13,7 @@ export class RegistrationDto {
   @IsNotEmpty({ message: 'Password verification required' })
   passwordVerification: string;
 
-  constructor(
-    username: string,
-    email: string,
-    password: string,
-    passwordVerification: string,
-  ) {
+  constructor(username: string, email: string, password: string, passwordVerification: string) {
     this.username = username;
     this.email = email;
     this.password = password;
