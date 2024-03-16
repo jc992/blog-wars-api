@@ -1,5 +1,8 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Delete, Param, UseGuards, Patch } from '@nestjs/common';
 import { UserService } from './user.service';
+import { JwtAuthGuard } from '../auth/jwtAuth.guard';
+import { UpdateUserDto } from './dto/updateUser.dto';
+import { DeleteResult, UpdateResult } from 'typeorm';
 
 @Controller('user')
 export class UserController {
@@ -10,5 +13,15 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  // TODO: update and delete endpoints
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() dto: UpdateUserDto): Promise<UpdateResult> {
+    return this.userService.update(+id, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async delete(@Param('id') id: string): Promise<DeleteResult> {
+    return this.userService.delete(+id);
+  }
 }
