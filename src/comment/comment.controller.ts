@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpException, HttpStatus } from '@nestjs/common';
 import { CommentService } from './comment.service';
-import { CreateCommentDto } from './dto/createComment.dto';
+import { CommentDto } from './dto/comment.dto';
 import { UpdateCommentDto } from './dto/updateComment.dto';
 
 @Controller('comment')
@@ -8,18 +8,21 @@ export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
   @Post()
-  create(@Body() createCommentDto: CreateCommentDto) {
+  post(@Body() createCommentDto: CommentDto) {
     return this.commentService.create(createCommentDto);
   }
 
   @Get()
-  findAll() {
-    return this.commentService.findAll();
-  }
+  get(@Query('userId') userId?: string, @Query('blogPostId') blogPostId?: string) {
+    if (userId) {
+      return this.commentService.findByUserId(+userId);
+    }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.commentService.findOne(+id);
+    if (blogPostId) {
+      return this.commentService.findByBlogPostId(+blogPostId);
+    }
+
+    throw new HttpException('userId or blogPostId necessary as query string param for request', HttpStatus.BAD_REQUEST);
   }
 
   @Patch(':id')
@@ -28,7 +31,7 @@ export class CommentController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  delete(@Param('id') id: string) {
     return this.commentService.remove(+id);
   }
 }

@@ -3,6 +3,8 @@ import { BlogPostService } from './blogPost.service';
 import { CreateBlogPostDto } from './dto/createBlogPost.dto';
 import { UpdateBlogPostDto } from './dto/updateBlogPost.dto';
 import { JwtAuthGuard } from '../auth/jwtAuth.guard';
+import { BlogPostModel } from './dto/blogPostModel.dto';
+import { DeleteResult, UpdateResult } from 'typeorm';
 
 @Controller('blogPost')
 export class BlogPostController {
@@ -10,27 +12,32 @@ export class BlogPostController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createBlogPostDto: CreateBlogPostDto) {
+  async create(@Body() createBlogPostDto: CreateBlogPostDto) {
     return this.blogPostService.create(createBlogPostDto);
   }
 
   @Get()
-  findAll() {
+  async findAll(): Promise<BlogPostModel[]> {
     return this.blogPostService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string): Promise<BlogPostModel> {
     return this.blogPostService.findById(+id);
   }
 
+  @Get(':userId')
+  async findByUser(@Param('userId') userId: string): Promise<BlogPostModel[]> {
+    return this.blogPostService.findByUserId(+userId);
+  }
+
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBlogPostDto: UpdateBlogPostDto) {
+  async update(@Param('id') id: string, @Body() updateBlogPostDto: UpdateBlogPostDto): Promise<UpdateResult> {
     return this.blogPostService.update(+id, updateBlogPostDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string): Promise<DeleteResult> {
     return this.blogPostService.remove(+id);
   }
 }

@@ -9,4 +9,6 @@ export class UserController {
   create(@Body() createUserDto: any) {
     return this.userService.create(createUserDto);
   }
+
+  // TODO: update and delete endpoints
 }
