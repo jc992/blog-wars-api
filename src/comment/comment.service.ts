@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotImplementedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CommentDto } from './dto/comment.dto';
 import { UpdateCommentDto } from './dto/updateComment.dto';
 import { UserService } from '../user/user.service';
@@ -37,13 +37,13 @@ export class CommentService {
   }
 
   async findByUserId(userId: number): Promise<Comment[]> {
-    const posts = await this.repo.findBy({ userId });
-    return Promise.all(posts.map(this.decryptComment));
+    const comments = await this.repo.findBy({ userId });
+    return Promise.all(comments.map((c) => this.decryptComment(c)));
   }
 
   async findByBlogPostId(blogPostId: number): Promise<Comment[]> {
-    const posts = await this.repo.findBy({ blogPostId });
-    return Promise.all(posts.map(this.decryptComment));
+    const comments = await this.repo.findBy({ blogPostId });
+    return Promise.all(comments.map((c) => this.decryptComment(c)));
   }
 
   async update(id: number, dto: UpdateCommentDto) {
