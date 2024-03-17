@@ -6,7 +6,7 @@ import { EncryptionService } from '../encryption/encryption.service';
 import { Comment } from './entities/comment.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BlogPostService } from '../blog-post/blogPost.service';
+import { BlogPostService } from '../blogPost/blogPost.service';
 
 @Injectable()
 export class CommentService {
