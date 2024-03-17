@@ -27,7 +27,7 @@ export class BlogPostController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get(':userId')
+  @Get('fromUser/:userId')
   async findByUser(@Param('userId') userId: string): Promise<BlogPostModel[]> {
     return this.blogPostService.findByUserId(+userId);
   }

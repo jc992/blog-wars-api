@@ -29,12 +29,12 @@ export class BlogPostService {
   }
 
   async findAll(): Promise<BlogPostModel[]> {
-    const posts = await this.repo.find();
+    const posts = await this.repo.createQueryBuilder('post').leftJoinAndSelect('post.user', 'user').getMany();
     return Promise.all(posts.map(async (p) => new BlogPostModel(await this.decryptPost(p))));
   }
 
   async findById(id: number): Promise<BlogPostModel> {
-    const post = await this.repo.findOneBy({ id });
+    const post = await this.repo.createQueryBuilder('post').leftJoinAndSelect('post.user', 'user').where(`post.id = ${id}`).getOne();
     if (!post) {
       throw new HttpException('blog post not found', HttpStatus.NOT_FOUND);
     }
@@ -42,7 +42,7 @@ export class BlogPostService {
   }
 
   async findByUserId(userId: number): Promise<BlogPostModel[]> {
-    const posts = await this.repo.findBy({ userId });
+    const posts = await this.repo.createQueryBuilder('post').leftJoinAndSelect('post.user', 'user').where(`user.id = ${userId}`).getMany()
     return Promise.all(posts.map(async (p) => new BlogPostModel(await this.decryptPost(p))));
   }
 
