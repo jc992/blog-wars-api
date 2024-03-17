@@ -29,7 +29,10 @@ $ yarn build
 $ yarn typeorm:migration:run
 ```
 
-## TODO Create a population script to allow for seeding some start up data in the API if necessary
+- Run seed to populate db with mock data
+```bash
+$ node dist/scripts/seed.js 
+```
 
 - Start up the project
 
@@ -38,10 +41,10 @@ $ yarn typeorm:migration:run
 $ yarn start
 
 # watch mode
-$ npm run start:dev
+$ yarn start:dev
 
 # production mode
-$ npm run start:prod
+$ yarn start:prod
 ```
 
 ## Stay in touch
