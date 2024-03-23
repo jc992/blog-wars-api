@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CommentDto } from './dto/comment.dto';
+import { CreateCommentDto } from './dto/createComment.dto';
 import { UpdateCommentDto } from './dto/updateComment.dto';
 import { UserService } from '../user/user.service';
 import { EncryptionService } from '../encryption/encryption.service';
@@ -7,6 +7,7 @@ import { Comment } from './entities/comment.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BlogPostService } from '../blogPost/blogPost.service';
+import { CommentModel } from './dto/commentModel.dto';
 
 @Injectable()
 export class CommentService {
@@ -17,7 +18,7 @@ export class CommentService {
     @InjectRepository(Comment) private repo: Repository<Comment>,
   ) {}
 
-  async create({ userId, blogPostId, content }: CommentDto): Promise<any> {
+  async create({ userId, blogPostId, content }: CreateCommentDto): Promise<any> {
     await this.checkUserAndPostExistOrThrow(userId, blogPostId);
     const encryptedContent = await this.encryptionService.encrypt(content);
 
@@ -36,14 +37,22 @@ export class CommentService {
     return this.decryptComment(comment);
   }
 
-  async findByUserId(userId: number): Promise<Comment[]> {
-    const comments = await this.repo.findBy({ userId });
-    return Promise.all(comments.map((c) => this.decryptComment(c)));
+  async findByUserId(userId: number): Promise<CommentModel[]> {
+    const comments = await this.repo
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.user', 'user')
+      .where(`comment.userId = ${userId}`)
+      .getMany();
+    return Promise.all(comments.map(async (c) => new CommentModel(await this.decryptComment(c))));
   }
 
-  async findByBlogPostId(blogPostId: number): Promise<Comment[]> {
-    const comments = await this.repo.findBy({ blogPostId });
-    return Promise.all(comments.map((c) => this.decryptComment(c)));
+  async findByBlogPostId(blogPostId: number): Promise<CommentModel[]> {
+    const comments = await this.repo
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.user', 'user')
+      .where(`comment.blogPostId = ${blogPostId}`)
+      .getMany();
+    return Promise.all(comments.map(async (c) => new CommentModel(await this.decryptComment(c))));
   }
 
   async update(id: number, dto: UpdateCommentDto) {
