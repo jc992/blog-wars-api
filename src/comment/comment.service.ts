@@ -18,7 +18,7 @@ export class CommentService {
     @InjectRepository(Comment) private repo: Repository<Comment>,
   ) {}
 
-  async create({ userId, blogPostId, content }: CreateCommentDto): Promise<any> {
+  async create({ blogPostId, content }: CreateCommentDto, userId: number): Promise<any> {
     await this.checkUserAndPostExistOrThrow(userId, blogPostId);
     const encryptedContent = await this.encryptionService.encrypt(content);
 

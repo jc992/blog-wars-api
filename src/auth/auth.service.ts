@@ -4,6 +4,7 @@ import { RegistrationDto } from './dto/register.dto';
 import { UserService } from '../user/user.service';
 import { LoginDto } from './dto/login.dto';
 import { AccessTokenDto } from './dto/accessToken.dto';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -33,6 +34,10 @@ export class AuthService {
 
     const userInsertResult = await this.userService.create(dto);
     return !!userInsertResult;
+  }
+
+  async validateUser(username: string, password: string): Promise<User | null> {
+    return this.userService.getByUsername({ username, password });
   }
 
   // TODO: better name ?

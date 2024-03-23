@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { BlogPostService } from './blogPost.service';
 import { CreateBlogPostDto } from './dto/createBlogPost.dto';
 import { UpdateBlogPostDto } from './dto/updateBlogPost.dto';
@@ -12,8 +12,8 @@ export class BlogPostController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createBlogPostDto: CreateBlogPostDto) {
-    return this.blogPostService.create(createBlogPostDto);
+  async create(@Body() createBlogPostDto: CreateBlogPostDto, @Req() { user }) {
+    return this.blogPostService.create(createBlogPostDto, user.id);
   }
 
   @Get()
@@ -31,7 +31,7 @@ export class BlogPostController {
   async findByUser(@Param('userId') userId: string): Promise<BlogPostModel[]> {
     return this.blogPostService.findByUserId(+userId);
   }
-  
+
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateBlogPostDto: UpdateBlogPostDto): Promise<UpdateResult> {
