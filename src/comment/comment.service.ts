@@ -42,6 +42,7 @@ export class CommentService {
       .createQueryBuilder('comment')
       .leftJoinAndSelect('comment.user', 'user')
       .where(`comment.userId = ${userId}`)
+      .orderBy('comment.createdAt', 'ASC')
       .getMany();
     return Promise.all(comments.map(async (c) => new CommentModel(await this.decryptComment(c))));
   }
@@ -51,6 +52,7 @@ export class CommentService {
       .createQueryBuilder('comment')
       .leftJoinAndSelect('comment.user', 'user')
       .where(`comment.blogPostId = ${blogPostId}`)
+      .orderBy('comment.createdAt', 'ASC')
       .getMany();
     return Promise.all(comments.map(async (c) => new CommentModel(await this.decryptComment(c))));
   }
