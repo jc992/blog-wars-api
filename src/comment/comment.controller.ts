@@ -10,12 +10,12 @@ import {
   HttpException,
   HttpStatus,
   UseGuards,
-  Req,
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/createComment.dto';
 import { UpdateCommentDto } from './dto/updateComment.dto';
 import { JwtAuthGuard } from '../auth/jwtAuth.guard';
+import { UserId } from '../decorators/userId.decorator';
 
 @Controller('comment')
 export class CommentController {
@@ -23,8 +23,8 @@ export class CommentController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  post(@Body() createCommentDto: CreateCommentDto, @Req() { user }) {
-    return this.commentService.create(createCommentDto, user.id);
+  post(@Body() createCommentDto: CreateCommentDto, @UserId() userId: number) {
+    return this.commentService.create(createCommentDto, userId);
   }
 
   @Get()

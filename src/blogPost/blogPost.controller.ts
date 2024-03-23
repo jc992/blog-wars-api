@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { BlogPostService } from './blogPost.service';
 import { CreateBlogPostDto } from './dto/createBlogPost.dto';
 import { UpdateBlogPostDto } from './dto/updateBlogPost.dto';
 import { JwtAuthGuard } from '../auth/jwtAuth.guard';
 import { BlogPostModel } from './dto/blogPostModel.dto';
 import { DeleteResult, UpdateResult } from 'typeorm';
+import { UserId } from '../decorators/userId.decorator';
 
 @Controller('blogPost')
 export class BlogPostController {
@@ -12,8 +13,8 @@ export class BlogPostController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createBlogPostDto: CreateBlogPostDto, @Req() { user }) {
-    return this.blogPostService.create(createBlogPostDto, user.id);
+  async create(@Body() createBlogPostDto: CreateBlogPostDto, @UserId() userId: number) {
+    return this.blogPostService.create(createBlogPostDto, userId);
   }
 
   @Get()
@@ -28,7 +29,8 @@ export class BlogPostController {
 
   @UseGuards(JwtAuthGuard)
   @Get('fromUser/:userId')
-  async findByUser(@Param('userId') userId: string): Promise<BlogPostModel[]> {
+  async findByUser(@Param('userId') userId: string, @UserId() inting: number): Promise<BlogPostModel[]> {
+    console.log({ inting });
     return this.blogPostService.findByUserId(+userId);
   }
 
