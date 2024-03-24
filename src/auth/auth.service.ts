@@ -11,13 +11,9 @@ export class AuthService {
   constructor(private userService: UserService, private jwtService: JwtService) {}
 
   async login(dto: LoginDto): Promise<AccessTokenDto> {
-    try {
-      const isSignatureValid = await this.isPasswordVerifiedForLogin(dto);
-      if (isSignatureValid) {
-        return this.authenticateUser(dto);
-      }
-    } catch (e) {
-      return new AccessTokenDto('', e.message, e.response.error);
+    const isSignatureValid = await this.isPasswordVerifiedForLogin(dto);
+    if (isSignatureValid) {
+      return this.authenticateUser(dto);
     }
   }
 

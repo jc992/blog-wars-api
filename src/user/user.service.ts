@@ -43,15 +43,13 @@ export class UserService {
     });
 
     if (!user) {
-      //TODO: if no user throw
-      return null;
+      throw new HttpException('user not found', HttpStatus.NOT_FOUND);
     }
 
     const computedHash = await hash(password, user.salt);
 
     if (computedHash !== user.hash) {
-      // TODO: throw
-      return null;
+      throw new HttpException('wrong password', HttpStatus.UNAUTHORIZED);
     }
     return user;
   }
